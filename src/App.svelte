@@ -11,6 +11,7 @@
     <nav class="flex w-screen py-2 items-center max-w-5xl mx-auto">
         <!-- logo -->
         <div class="flex-1 flex justify-center mr-auto">
+            <img src="images/logo.svg" alt="dependefy logo" class="h-8 my-auto pr-2">
             <span class="font-thin text-xl text-purple-800">depen</span><span class="text-xl text-purple-800">defy</span>
         </div>
         <!-- nav -->
