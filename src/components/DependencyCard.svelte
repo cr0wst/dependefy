@@ -65,18 +65,12 @@
                 Delete Project
             </button>
         </div>
-
-        <div class="mx-auto w-full pt-2">
-            <button on:click={() => expanded = false}
-                    class="rounded-full text-purple-800 bg-white border border-purple-800 text-xs py-1 px-2 mx-auto w-full">
-                Collapse More Info
-            </button>
+        <div class="mx-auto w-full pt-2 text-center text-gray-400" on:click={() => expanded = !expanded}>
+            <img class="mx-auto opacity-50" src="images/chevron-bar-up.svg">
         </div>
     {:else}
-        <div class="mx-auto w-full pt-2">
-            <button on:click={() => expanded = true}
-                    class="rounded-full text-white bg-purple-800 text-xs py-1 px-2 mx-auto w-full">More Info
-            </button>
+        <div class="mx-auto w-full pt-2 text-center text-gray-400" on:click={() => expanded = !expanded}>
+            <img class="mx-auto opacity-50" src="images/chevron-bar-down.svg">
         </div>
     {/if}
 </div>
