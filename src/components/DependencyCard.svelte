@@ -86,57 +86,12 @@
                                      alt="{dependency.type} logo"></td>
                             <td>{dependency.name}</td>
                             <td>{dependency.version}</td>
-                            <td>{dependency.latest}</td>
+                            <td>{dependency.latest_version}</td>
                         </tr>
                     {/each}
                     </tbody>
                 </table>
             </div>
         </div>
-    {/if}
-    <div class="pt-2 flex">
-        {#if isAddingDependency !== true}
-            <button on:click={() => isAddingDependency = true}
-                    class="rounded-md text-white bg-purple-800 text-xs font-bold py-1 px-2 mr-auto">
-                Add Dependency
-            </button>
-        {/if}
-    </div>
-    {#if isAddingDependency}
-        <form class="space-y-4" on:submit|preventDefault={onAddDependency}>
-            <div class="rounded-md border space-y-px p-2">
-                <div class="grid gap-6">
-                    {#if addDependencyError}
-                        <div class="col-span-12 text-red-500">{addDependencyError}</div>
-                    {/if}
-                    <div class="col-span-12">
-                        <label for="dependency_type" class="block text-sm font-medium text-purple-800">Type</label>
-                        <input name="dependency_type" id="dependency_type" bind:value={addDependencyType}
-                               class="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"/>
-                    </div>
-                    <div class="col-span-12">
-                        <label for="dependency_name" class="block text-sm font-medium text-purple-800">Name</label>
-                        <input name="dependency_name" id="dependency_name" bind:value={addDependencyName}
-                               class="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"/>
-                    </div>
-                    <div class="col-span-12">
-                        <label for="dependency_version"
-                               class="block text-sm font-medium text-purple-800">Version</label>
-                        <input name="dependency_version" id="dependency_version" bind:value={addDependencyVersion}
-                               class="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"/>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <button type="submit"
-                        class="group relative justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-800 hover:bg-purple-900">
-                    Add
-                </button>
-                <button on:click={onCancelAdding}
-                        class="group relative justify-center py-2 px-4 border border-purple-800 text-sm font-medium rounded-md text-purple-800 bg-white-800">
-                    Cancel
-                </button>
-            </div>
-        </form>
     {/if}
 </div>

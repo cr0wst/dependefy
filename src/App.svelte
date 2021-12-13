@@ -2,7 +2,7 @@
     import './utils/identity'
 
     import {Route, Router} from "svelte-routing";
-    import Main from "./routes/Dashboard.svelte";
+    import Dashboard from "./routes/Dashboard.svelte";
     import NewProject from "./routes/NewProject.svelte";
     import Navigation from "./components/Navigation.svelte";
     import {user} from "./stores/user";
@@ -18,13 +18,12 @@
 </script>
 
 <Router url="{url}">
-    <!-- component -->
     <Navigation/>
 
     <div class="container pt-2">
         {#if isLoggedIn}
             <Route path="/">
-                <Main/>
+                <Dashboard/>
             </Route>
             <Route path="project/new">
                 <NewProject/>

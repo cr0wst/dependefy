@@ -1,63 +1,27 @@
-const faunadb = require('faunadb')
+const db = require('./utils/db')
 
-const {Map, Paginate, Match, Get, Lambda, Index, Join} = faunadb.query
-
-const client = new faunadb.Client({
-    secret: process.env.FAUNADB_SERVER_SECRET
-})
+const GET_PROJECTS_FOR_USER_QUERY = "SELECT p.id, p.name, p.description FROM projects p JOIN users u ON p.owner = u.id WHERE u.email = $1"
+const GET_DEPENDENCIES_FOR_PROJECT_QUERY = "SELECT pd.name, pd.version, pd.type, (SELECT ld.version from dependencies ld WHERE ld.name = pd.name ORDER BY ld.created_at DESC LIMIT 1) as latest_version FROM project_dependencies pd WHERE pd.project = $1"
 
 exports.handler = async function (event, context) {
     const {user} = context.clientContext
 
     if (user) {
-        // Get project refs by owner
-        let projectDocuments = await client.query(
-            Map(
-                Paginate(
-                    Match(Index("projects_by_owner"), user.email),
-                ),
-                Lambda(ref => Get(ref))
-            )
-        )
+        const results = await db.query(GET_PROJECTS_FOR_USER_QUERY, [user.email])
 
         const projects = []
-        for (let project of projectDocuments.data) {
-            // Get a project's dependencies
-            // TODO: Figure out how to do this _in_ faunadb
-            let projectDependencies = await client.query(
-                Map(
-                    Paginate(
-                        Match(Index("project_dependencies_by_project_ref"), project.ref.id)
-                    ),
-                    Lambda(ref => Get(ref))
-                )
+        // Iterate over projects to unpack dependencies
+        for (let project of results.rows) {
+            const dependencyResults = await db.query(GET_DEPENDENCIES_FOR_PROJECT_QUERY, [project.id])
+            projects.push(
+                {
+                    id: project.id,
+                    name: project.name,
+                    description: project.description,
+                    dependencies: dependencyResults.rows
+                }
             )
-            // TODO: This too or we're going to blow through our query numbers
-            const dependencies = []
-            for (let dependency of projectDependencies.data) {
-                let latest = await client.query(
-                    Get(
-                        Match(Index("dependencies_by_name"), dependency.data.name)
-                    )
-                )
-
-                dependencies.push({
-                    name: dependency.data.name,
-                    version: dependency.data.version,
-                    latest: latest.data.version,
-                    type: latest.data.type
-                })
-            }
-            let joinedProject = {
-                ref: project.ref.id,
-                name: project.data.name,
-                description: project.data.description,
-                dependencies: dependencies
-            }
-
-            projects.push(joinedProject)
         }
-
         return {
             statusCode: 200,
             body: JSON.stringify(projects)
