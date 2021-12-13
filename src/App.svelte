@@ -1,44 +1,52 @@
 <script>
-    import {Link, Route, Router} from "svelte-routing";
+    import './utils/identity'
+
+    import {Route, Router} from "svelte-routing";
     import Main from "./routes/Dashboard.svelte";
     import NewProject from "./routes/NewProject.svelte";
-
+    import Navigation from "./components/Navigation.svelte";
+    import {user} from "./stores/user";
+    import netlifyIdentity from "netlify-identity-widget";
     // Used for SSR. A falsy value is ignored by the Router.
     export let url = "";
+
+    const onSignIn = () => {
+        netlifyIdentity.open('login')
+    }
+
+    $: isLoggedIn = !!$user
 </script>
 
 <Router url="{url}">
     <!-- component -->
-    <nav class="flex items-center justify-between flex-wrap p-6">
-        <!-- logo -->
-        <div class="flex items-center flex-shrink-0">
-            <Link to="/">
-                <div class="flex-1 flex">
-                    <img src="/images/logo.svg" alt="dependefy logo" class="h-8 my-auto pr-2">
-                    <span class="font-thin text-xl text-purple-800">depen</span><span
-                        class="text-xl text-purple-800">defy</span>
-                </div>
-            </Link>
-        </div>
+    <Navigation/>
 
-        <!-- Links -->
-        <!-- User Section -->
-        <div class="flex justify-center">
-            <Link to="project/new"
-                  class="text-purple-800 my-auto p-1 border px-2 rounded-md border-purple-800 text-sm mr-2 hover:bg-purple-800 hover:text-white">+ New
-                Project
-            </Link>
-            <img src="/images/avatar-example.png" alt="Your profile picture."
-                 class="my-auto rounded-full h-8 w-8 object-scale-down">
-        </div>
-    </nav>
     <div class="container pt-2">
-        <Route path="/">
-            <Main/>
-        </Route>
-        <Route path="project/new">
-            <NewProject/>
-        </Route>
+        {#if isLoggedIn}
+            <Route path="/">
+                <Main/>
+            </Route>
+            <Route path="project/new">
+                <NewProject/>
+            </Route>
+        {:else}
+            <div class="flex max-w-md flex-col mx-auto bg-white overflow-hidden md:max-w-2xl p-4 mb-2">
+                <div class="font-thin text-4xl w-full text-center mx-auto content-center p-6">
+                    Register or Sign In to Continue
+                </div>
+
+                <div class="flex flex-row w-full block items-center justify-center">
+                    <button on:click={onSignIn}
+                            class="text-purple-800 my-auto p-1 border px-2 rounded-md border-purple-800 text-sm mr-2 hover:bg-purple-800 hover:text-white">
+                        Sign In
+                    </button>
+                    <button
+                            class="text-purple-800 my-auto p-1 border px-2 rounded-md border-purple-800 text-sm mr-2 hover:bg-purple-800 hover:text-white">
+                        Register
+                    </button>
+                </div>
+            </div>
+        {/if}
     </div>
     <footer class="items-center mx-auto max-w-5xl text-center w-full p-4 text-sm font-thin">
         <div>Manage dependencies with ease using <span class="font-thin text-purple-800">depen</span><span
