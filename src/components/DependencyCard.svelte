@@ -53,7 +53,7 @@
 
 <div class="max-w-md mx-auto bg-white rounded-xl border overflow-hidden md:max-w-2xl p-4 mb-2">
     <div class="flex flex-row">
-        <div class="text-2xl text-purple-800 font-bold w-full">{name}</div>
+        <div class="text-4xl text-purple-800 font-bold w-full">{name}</div>
         {#if dependencies.length > 0}
             {#each Object.keys(reducedDependencies) as type}
                 <img src="images/logos/{type}.svg" class="h-4 pr-2 my-auto" alt="{type} logo">
