@@ -2,11 +2,13 @@
     import './utils/identity'
 
     import {Route, Router} from "svelte-routing";
-    import Dashboard from "./routes/Dashboard.svelte";
     import NewProject from "./routes/NewProject.svelte";
     import Navigation from "./components/Navigation.svelte";
     import {user} from "./stores/user";
     import netlifyIdentity from "netlify-identity-widget";
+    import Home from "./routes/Home.svelte";
+    import Project from "./routes/Project.svelte";
+
     // Used for SSR. A falsy value is ignored by the Router.
     export let url = "";
 
@@ -18,16 +20,13 @@
 </script>
 
 <Router url="{url}">
-    <Navigation/>
+    <Navigation location="{location}"/>
 
-    <div class="container pt-2">
+    <div class="w-1/2 mx-auto">
         {#if isLoggedIn}
-            <Route path="/">
-                <Dashboard/>
-            </Route>
-            <Route path="project/new">
-                <NewProject/>
-            </Route>
+            <Route path="/" component="{Home}"/>
+            <Route path="projects/:id" component="{Project}"/>
+            <Route path="projects/new" component="{NewProject}"/>
         {:else}
             <div class="flex max-w-md flex-col mx-auto bg-white overflow-hidden md:max-w-2xl p-4 mb-2">
                 <div class="font-thin text-4xl w-full text-center mx-auto content-center p-6">
